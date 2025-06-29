@@ -9,11 +9,21 @@ export default class LoaderBuilder {
 // @match https://www.bondage-asia.com/*
 // @match https://bondageprojects.com/*
 // @match https://www.bondageprojects.com/*`;
-    this.isBranch = !this.isLocal && process.env.BRANCH === 'main' || process.env.BRANCH === 'beta';
-    this.branch = process.env.BRANCH;
+  #localMatch = '// @match http://localhost:*/*'
+
+  constructor() {
+    this.isLocal = !process.env.GITHUB_SHA;
+    this.isBranch = !this.isLocal && process.env.GITHUB_REF_NAME === 'main' || process.env.GITHUB_REF_NAME === 'beta';
+    this.branch = process.env.GITHUB_REF_NAME;
     this.pr = process.env.REVIEW_ID;
     this.label = this.isLocal ? 'local ' : (this.branch === 'main' ? '' : `${this.branch.startsWith('pull/') ? `PR #${this.pr}` : this.branch} `);
-    this.URL = this.isLocal ? 'http://localhost:4000' : (process.env.CONTEXT === 'production' ? process.env.URL : process.env.DEPLOY_PRIME_URL);
+    this.URL = this.isLocal ? 'http://localhost:4000' : this.getGitHubURL();
+  }
+  
+  getGitHubURL() {
+    const repo = process.env.GITHUB_REPOSITORY;
+    const [owner, repoName] = repo.split('/');
+    return `https://${owner}.github.io/${repoName}/`;
   }
 
   getUserScriptMeta(isFUSAM) {
