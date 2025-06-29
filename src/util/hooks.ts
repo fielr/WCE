@@ -13,14 +13,33 @@ SDK.hookFunction(
   "GameRun",
   HOOK_PRIORITIES.Top,
   (args, next) => {
-    const ts = performance.now();
-    timers.forEach((t) => {
-      if (ts - t.lastTime > t.intval) {
-        t.lastTime = ts;
-        t.cb();
-      }
-    });
-    return next(args);
+    if (!document.hidden) {
+      const ts = performance.now();
+      timers.forEach((t) => {
+        if (ts - t.lastTime > t.intval) {
+          t.lastTime = ts;
+          t.cb();
+        }
+      });
+      return next(args);
+    }
+  }
+);
+
+SDK.hookFunction(
+  "GameRunBackground",
+  HOOK_PRIORITIES.Top,
+  (args, next) => {
+    if (document.hidden) {
+      const ts = performance.now();
+      timers.forEach((t) => {
+        if (ts - t.lastTime > t.intval) {
+          t.lastTime = ts;
+          t.cb();
+        }
+      });
+      return next(args);
+    }
   }
 );
 
