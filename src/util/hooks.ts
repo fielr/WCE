@@ -13,6 +13,19 @@ export function createTimer(cb: () => void, intval: number): () => void {
 }
 
 SDK.hookFunction("GameRun", HOOK_PRIORITIES.Top, (args, next) => {
+  if (document.hidden) return next(args);
+  const ts = performance.now();
+  timers.forEach(t => {
+    if (ts - t.lastTime > t.intval) {
+      t.lastTime = ts;
+      t.cb();
+    }
+  });
+  return next(args);
+});
+
+SDK.hookFunction("GameRunBackground", HOOK_PRIORITIES.Top, (args, next) => {
+  if (!document.hidden) return next(args);
   const ts = performance.now();
   timers.forEach(t => {
     if (ts - t.lastTime > t.intval) {
