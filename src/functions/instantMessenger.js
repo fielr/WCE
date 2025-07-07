@@ -445,6 +445,13 @@ export default function instantMessenger() {
       .forEach((node) => {
         friendList.removeChild(node);
         friendList.appendChild(node);
+        const memberID = node.id.slice("bce-friend-list-entry-".length);
+        if (Player.GhostList.includes(Number(memberID))) {
+          node.classList.add("bce-hidden");
+        }
+        if (node.classList.contains("bce-hidden") && !Player.GhostList.includes(Number(memberID))) {
+          node.classList.remove("bce-hidden");
+        }
       });
   }
 
