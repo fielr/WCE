@@ -118,6 +118,14 @@ export default async function automaticExpressions() {
   if (!globalThis.bce_ActivityTriggers) globalThis.bce_ActivityTriggers = ActivityTriggers;
 
   /**
+   * @param {ServerChatRoomMessage} data
+   * @returns {boolean}
+   */
+  function dataFromGhostList(data) {
+    return data.Sender && (Player.GhostList.includes(data.Sender) || Player.BlackList.includes(data.Sender));
+  }
+
+  /**
    * @param {ChatMessageDictionary} [dict]
    * @returns {boolean}
    */
@@ -148,7 +156,7 @@ export default async function automaticExpressions() {
               }
               // Criteria met
               pushEvent(globalThis.bce_EventExpressions[trigger.Event]);
-            } else if (data.Sender === Player.MemberNumber || dictHasPlayerTarget(data.Dictionary)) {
+            } else if (data.Sender === Player.MemberNumber || (dictHasPlayerTarget(data.Dictionary) && !dataFromGhostList(data))) {
               // Lacking criteria, check for presence of player as source or target
               pushEvent(globalThis.bce_EventExpressions[trigger.Event]);
               break activityTriggers;
