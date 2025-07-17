@@ -316,8 +316,15 @@ export default function instantMessenger() {
     }
   }
 
+  let isCompositing = false;
+  messageInput.addEventListener("compositionstart", () => {
+    isCompositing = true;
+  });
+  messageInput.addEventListener("compositionend", () => {
+    isCompositing = false;
+  });
   messageInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey && !isCompositing) {
       e.preventDefault();
       if (BCXgetRuleState("speech_restrict_beep_send")?.isEnforced && !fbcSettings.allowIMBypassBCX) {
         fbcNotify(displayText("Sending beeps is currently restricted by BCX rules"));
