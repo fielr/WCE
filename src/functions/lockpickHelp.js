@@ -6,17 +6,6 @@ import { waitFor } from "../util/utils";
 export default async function lockpickHelp() {
   await waitFor(() => !!StruggleMinigames);
 
-  /**
-   * @param {number} s
-   * @returns {() => number}
-   */
-  function newRand(s) {
-    return () => {
-      s = Math.sin(s) * 10000;
-      return s - Math.floor(s);
-    };
-  }
-
   const pinSpacing = 100,
     pinWidth = 200,
     x = 1575,
@@ -24,19 +13,11 @@ export default async function lockpickHelp() {
 
   SDK.hookFunction("StruggleLockPickDraw", HOOK_PRIORITIES.AddBehaviour, (args, next) => {
     if (fbcSettings.lockpick && StruggleLockPickOrder) {
-      const seed = parseInt(StruggleLockPickOrder.join(""));
-      const rand = newRand(seed);
-      const threshold = SkillGetWithRatio(Player, "LockPicking") / 20;
-      const hints = StruggleLockPickOrder.map(a => {
-        const r = rand();
-        return r < threshold ? a : false;
-      });
+      const hints = StruggleLockPickOrder;
       for (let p = 0; p < hints.length; p++) {
         // Replicates pin rendering in the game Struggle.js
         const xx = x - pinWidth / 2 + (0.5 - hints.length / 2 + p) * pinSpacing;
-        if (hints[p] !== false) {
-          DrawText(`${StruggleLockPickOrder.indexOf(p) + 1}`, xx, y, "blue");
-        }
+        DrawText(`${StruggleLockPickOrder.indexOf(p) + 1}`, xx, y, "white");
       }
     }
     return next(args);

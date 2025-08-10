@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "start": "rolldown --watch -c & npx -y http-server@latest ./dist -p 4000 -c-1 --cors & npm run serve:bc",
+    "dev": "rolldown --watch -c & npx -y http-server@latest ./dist -p 4000 -c-1 --cors",
     "build": "rolldown -c",
     "test": "oxlint --type-aware --type-check --report-unused-disable-directives",
     "format": "oxfmt",
