@@ -4,7 +4,7 @@
   "license": "GPL-3.0-or-later",
   "scripts": {
     "start": "rolldown --watch -c & npx -y http-server@latest ./dist -p 4000 -c-1 --cors & npm run serve:bc",
-    "dev": "rollwodn --watch -c & npx -y http-server@latest ./dist -p 4000 -c-1 --cors",
+    "dev": "rolldown --watch -c & npx -y http-server@latest ./dist -p 4000 -c-1 --cors",
     "build": "rolldown -c",
     "test": "npm run typecheck ; npm run lint",
     "test2": "npm run tsnative ; npm run oxlint",
