@@ -20,10 +20,7 @@ jobs:
           fetch-depth: 0
 
       - name: Upstream Sync
-        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4.1
+        uses: imba-tjd/rebase-upstream-action@0.12
         with:
-          upstream_sync_repo: KittenApps/WCE
-          upstream_sync_branch: main
-          target_sync_branch: main
-          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
-          git_config_pull_rebase: true
+          branch: main
+          depth: 0
