@@ -9,9 +9,7 @@ export default class LoaderBuilder {
 // @match https://www.bondage-asia.com/*
 // @match https://bondageprojects.com/*
 // @match https://www.bondageprojects.com/*`;
-  #localMatch = '// @match http://localhost:*/*'
 
-  constructor() {
     this.isLocal = !process.env.GITHUB_SHA;
     this.isBranch = !this.isLocal && process.env.GITHUB_REF_NAME === 'main' || process.env.GITHUB_REF_NAME === 'beta';
     this.branch = process.env.GITHUB_REF_NAME;
