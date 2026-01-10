@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "buttplug": "^3.2.2",
-    "dexie": "^4.2.1",
+    "idb": "^8.0.3",
     "rolldown": "^1.0.0-rc.1"
   },
   "devDependencies": {
