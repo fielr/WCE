@@ -1,11 +1,10 @@
+import { createChatOptions } from "../functions/antiGarbling";
+import { checkBlindness } from "../functions/blindWithoutGlasses";
+import { augmentedChatNotify } from "../functions/chatAugments";
 import { loadExtendedWardrobe, loadLocalWardrobe } from "../functions/extendedWardrobe";
 // oxlint-disable explicit-module-boundary-types explicit-function-return-type
 import { sendHello } from "../functions/hiddenMessageHandler";
 import { toySyncState, type FBCToySetting } from "../functions/toySync";
-import { fbcBeepNotify } from "./hooks";
-import { debug, logInfo, logWarn, logError } from "./logger";
-import { waitFor, sleep, isString, parseJSON, isNonNullObject, removeCustomEffect, enableLeashing, disableLeashing } from "./utils";
-
 import {
   settingsVersion,
   fbcChangelog,
@@ -16,10 +15,10 @@ import {
   BCE_COLOR_ADJUSTMENTS_CLASS_NAME,
   // DISCORD_INVITE_URL,
 } from "./constants";
-import { createChatOptions } from "../functions/antiGarbling";
-import { checkBlindness } from "../functions/blindWithoutGlasses";
-import { augmentedChatNotify } from "../functions/chatAugments";
+import { fbcBeepNotify } from "./hooks";
 import { displayText } from "./localization";
+import { debug, logInfo, logWarn, logError } from "./logger";
+import { waitFor, sleep, isString, parseJSON, isNonNullObject, removeCustomEffect, enableLeashing, disableLeashing } from "./utils";
 
 declare global {
   interface PlayerOnlineSettings {
@@ -883,7 +882,7 @@ export async function bceLoadSettings(): Promise<void> {
       delete Player.OnlineSettings.BCE;
     }
     const localVersion = settings?.version || 0;
-    if (onlineSettings && onlineSettings.version >= localVersion) {
+    if (onlineSettings?.version >= localVersion) {
       logInfo("using online settings");
       settings = onlineSettings;
     }

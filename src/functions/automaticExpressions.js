@@ -323,7 +323,7 @@ export default async function automaticExpressions() {
     bceExpressionsQueue.forEach(e => {
       if (e.Type === MANUAL_OVERRIDE_EVENT_TYPE) {
         e.Poses = [];
-      } else if (e.Poses && e.Poses.length > 0) {
+      } else if (e.Poses?.length > 0) {
         e.Poses.forEach(p => {
           if (p.Pose.length === 0) {
             return;

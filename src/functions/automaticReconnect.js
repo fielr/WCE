@@ -49,7 +49,7 @@ export default async function automaticReconnect() {
     const res = await accTable.get({ id: 1 });
     if (!res) return {};
     const { auth, iv, data } = res;
-    const decoder = new TextDecoder("utf8");
+    const decoder = new TextDecoder();
     try {
       const s = await window.crypto.subtle.decrypt({ name: "AES-GCM", iv, additionalData: auth, tagLength: 128 }, encKey, data);
       return (await parseJSON(decoder.decode(new Uint8Array(s)))) || {};

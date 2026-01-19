@@ -5,7 +5,7 @@ import { fbcSettings } from "../util/settings";
 export default function autoStruggle() {
   SDK.hookFunction("StruggleFlexibilityCheck", HOOK_PRIORITIES.OverrideBehaviour, (args, next) => {
     if (fbcSettings.autoStruggle) {
-      if (StruggleProgressFlexCircles && StruggleProgressFlexCircles.length > 0) {
+      if (StruggleProgressFlexCircles?.length > 0) {
         StruggleProgressFlexCircles.splice(0, 1);
         return true;
       }
@@ -25,7 +25,7 @@ export default function autoStruggle() {
     if (StruggleProgressCurrentMinigame === "Strength") {
       StruggleStrengthProcess(false);
     } else if (StruggleProgressCurrentMinigame === "Flexibility") {
-      if (StruggleProgressFlexCircles && StruggleProgressFlexCircles.length > 0) {
+      if (StruggleProgressFlexCircles?.length > 0) {
         StruggleFlexibilityProcess(false);
       }
     }
