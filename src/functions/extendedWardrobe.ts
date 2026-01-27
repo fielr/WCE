@@ -11,9 +11,10 @@ let localWardrobeDB: IDBPDatabase<{ wardrobe: { key: number; value: { id: number
 let extendedWardrobeLoaded = false;
 
 export async function loadLocalWardrobe(wardrobe: ItemBundle[][]): Promise<void> {
-  localWardrobeDB = await openDB("wce-local-wardrobe", 10, {
-    upgrade(db) {
+  localWardrobeDB = await openDB("wce-local-wardrobe", 11, {
+    upgrade(db, ov, nv, tx) {
       if (!db.objectStoreNames.contains("wardrobe")) db.createObjectStore("wardrobe", { keyPath: "id" });
+      for (const idx of tx.objectStore("wardrobe").indexNames) tx.objectStore("wardrobe").deleteIndex(idx);
     },
   });
   const localWardrobe = (await localWardrobeDB.getAll("wardrobe")) || [];

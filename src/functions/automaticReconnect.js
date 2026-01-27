@@ -9,10 +9,12 @@ import { registerSocketListener } from "./appendSocketListenersToInit";
 
 export default async function automaticReconnect() {
   /** @type {import("idb").IDBPDatabase<{key: { key: number; value: WCEKey }; accounts: { key: number; value: WCEAcc }}>} */
-  const db = await openDB("wce-saved-accounts", 20, {
-    upgrade(db) {
+  const db = await openDB("wce-saved-accounts", 21, {
+    upgrade(db, ov, nv, tx) {
       if (!db.objectStoreNames.contains("key")) db.createObjectStore("key", { keyPath: "id" });
+      for (const idx of tx.objectStore("key").indexNames) tx.objectStore("key").deleteIndex(idx);
       if (!db.objectStoreNames.contains("accounts")) db.createObjectStore("accounts", { keyPath: "id" });
+      for (const idx of tx.objectStore("accounts").indexNames) tx.objectStore("accounts").deleteIndex(idx);
     },
   });
 
