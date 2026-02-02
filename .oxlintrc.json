@@ -42,6 +42,7 @@
     "import/no-default-export": "off",
     "import/no-mutable-exports": "off",
     "import/no-named-export": "off",
+    "import/no-relative-parent-imports": "off",
     "jsdoc/require-param-description": "off",
     "jsdoc/require-returns-description": "off",
     "promise/always-return": "off",
@@ -109,6 +110,7 @@
         "unicorn/no-nested-ternary": "off",
         "no-undefined": "off",
         "import/no-anonymous-default-export": "off",
+        "import/no-nodejs-modules": "off",
         "node/no-process-env": "off"
       }
     }

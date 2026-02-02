@@ -399,6 +399,7 @@ export default async function automaticExpressions() {
   );
 
   SDK.hookFunction("CharacterSetFacialExpression", HOOK_PRIORITIES.OverrideBehaviour, (args, next) => {
+    // oxlint-disable-next-line prefer-const
     let [C, AssetGroup, Expression, Timer, Color] = args;
     if (!isCharacter(C) || !isString(AssetGroup) || (!isString(Expression) && Expression !== null) || !C.IsPlayer() || !fbcSettings.animationEngine) {
       return next(args);
