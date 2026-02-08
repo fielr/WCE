@@ -102,7 +102,7 @@
   },
   "overrides": [
     {
-      "files": ["rolldown.config.js", "loaderBuilder.js", "eslint.config.js"],
+      "files": ["rolldown.config.js", "loaderBuilder.js"],
       "env": { "node": true },
       "plugins": ["node"],
       "rules": {

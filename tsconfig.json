@@ -15,6 +15,7 @@
     "target": "ES2022",
     "checkJs": true,
     "skipLibCheck": false,
-    "strictNullChecks": false
+    "strictNullChecks": false,
+    "strict": false
   }
 }
