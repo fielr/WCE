@@ -14,7 +14,7 @@ const LICENSE = `/**
 *  (at your option) any later version.
 *
 *  This program is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  but WITHOUT ANY WARRANTY; without even the implied warranty ofNPM; 
 *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 *  GNU General Public License for more details.
 *
@@ -32,7 +32,7 @@ const config = defineConfig({
     sourcemap: true,
     postBanner: c => (c.isEntry ? LICENSE : undefined),
     minify: true,
-    legalComments: "inline",
+    comments: { legal: true },
     cleanDir: true,
   },
   transform: { target: "es2022", define: { PUBLIC_URL: `"${loaderBuilder.URL}"` } },
