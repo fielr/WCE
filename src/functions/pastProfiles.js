@@ -5,6 +5,7 @@ import { debug, logInfo, logWarn, logError } from "../util/logger";
 import { SDK, HOOK_PRIORITIES } from "../util/modding";
 import { fbcSettings } from "../util/settings";
 import { deepCopy, parseJSON, isCharacter, isNonNullObject, drawTextFitLeft, fbcChatNotify } from "../util/utils";
+import initPastProfilesHistory from "./pastProfilesHistory";
 
 export default async function pastProfiles() {
   if (!fbcSettings.pastProfiles) {
@@ -20,13 +21,16 @@ export default async function pastProfiles() {
       for (const idx of tx.objectStore("notes").indexNames) tx.objectStore("notes").deleteIndex(idx);
     },
   });
-
   ElementCreateTextArea("bceNoteInput");
   /** @type {HTMLTextAreaElement} */
   // @ts-expect-error
   const noteInput = document.getElementById("bceNoteInput");
   noteInput.maxLength = 10000;
   noteInput.classList.add("bce-hidden");
+
+  const profileHistory = await initPastProfilesHistory((memberNumber, characterBundle, seen) => {
+    openCharacterBundle(memberNumber, characterBundle, seen);
+  });
 
   async function readQuota() {
     try {
@@ -90,15 +94,16 @@ export default async function pastProfiles() {
       delete characterBundle[field];
     }
 
+    const snapshot = {
+      memberNumber: characterBundle.MemberNumber,
+      name,
+      lastNick: nick,
+      seen: Date.now(),
+      characterBundle: JSON.stringify(characterBundle),
+    };
     debug(`saving profile of ${nick ?? name} (${name})`);
     try {
-      await db.put("profiles", {
-        memberNumber: characterBundle.MemberNumber,
-        name,
-        lastNick: nick,
-        seen: Date.now(),
-        characterBundle: JSON.stringify(characterBundle),
-      });
+      await Promise.all([db.put("profiles", snapshot), profileHistory.saveHistory(snapshot)]);
     } catch (e) {
       const { quota, usage } = await readQuota();
       logError(`unable to save profile (${usage}/${quota}):`, e);
@@ -141,20 +146,34 @@ export default async function pastProfiles() {
 
   /**
    * @param {number} memberNumber
+   * @param {string} characterBundle
+   * @param {number} seen
+   * @returns {void}
+   */
+  function openCharacterBundle(memberNumber, characterBundle, seen) {
+    const C = CharacterLoadOnline(/** @type {ServerAccountDataSynced} */ (parseJSON(characterBundle)), memberNumber);
+    C.BCESeen = seen;
+    if (CurrentScreen === "ChatRoom") {
+      ChatRoomHideElements();
+      if (ChatRoomData) {
+        ChatRoomBackground = ChatRoomData.Background;
+      }
+    }
+    InformationSheetLoadCharacter(C);
+  }
+
+  /**
+   * @param {number} memberNumber
    * @returns {Promise<void>}
    */
   async function openCharacter(memberNumber) {
     try {
       const profile = await db.get("profiles", memberNumber);
-      const C = CharacterLoadOnline(/** @type {ServerAccountDataSynced} */ (parseJSON(profile.characterBundle)), memberNumber);
-      C.BCESeen = profile.seen;
-      if (CurrentScreen === "ChatRoom") {
-        ChatRoomHideElements();
-        if (ChatRoomData) {
-          ChatRoomBackground = ChatRoomData.Background;
-        }
+      if (!profile) {
+        throw new Error(`no saved profile for member number ${memberNumber}`);
       }
-      InformationSheetLoadCharacter(C);
+      profileHistory.markProfileListOpen(memberNumber);
+      openCharacterBundle(memberNumber, profile.characterBundle, profile.seen);
     } catch (e) {
       fbcChatNotify(displayText("No profile found"));
       logError("reading profile", e);
@@ -305,7 +324,6 @@ export default async function pastProfiles() {
     } else if (!inNotes && MouseIn(1520, 60, 90, 90)) showNoteInput();
     return next(args);
   });
-
   if (navigator.storage?.persisted && !(await navigator.storage.persisted())) {
     if (!(await navigator.storage.persist())) {
       logWarn("Profile storage may not be persistent.");
