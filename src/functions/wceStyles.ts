@@ -229,6 +229,9 @@ export default function wceStyles(): void {
     margin-right: 0.5em;
     user-select: none;
   }
+  .bce-profile-history-select {
+    z-index: 100 !important;
+  }
   .bce-pending {
     opacity: 0.4;
   }
