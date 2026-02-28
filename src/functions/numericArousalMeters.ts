@@ -25,11 +25,7 @@ export default function numericArousalMeters(): void {
       const [x, y, zoom, progress] = args;
       let color: "white" | "red" | "hotpink" | "pink" = "white";
       if (progress >= 95) {
-        if (increasing) {
-          color = "red";
-        } else {
-          color = "hotpink";
-        }
+        color = increasing ? "red" : "hotpink";
       } else if (progress >= 70) {
         color = "pink";
       }
