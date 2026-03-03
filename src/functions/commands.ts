@@ -136,11 +136,7 @@ export default async function commands(): Promise<void> {
       Description: displayText("[target member number]: Copy your or another player's appearance in a format that can be imported with WCE or BCX"),
       Action: (_, _command, [target]): void => {
         let targetCharacter: Character | null = null;
-        if (!target) {
-          targetCharacter = Player;
-        } else {
-          targetCharacter = Character.find(c => c.MemberNumber === parseInt(target)) ?? null;
-        }
+        targetCharacter = (target ? Character.find(c => c.MemberNumber === parseInt(target)) : Player) ?? null;
         if (!targetCharacter) {
           logInfo("Could not find member", target);
           return;

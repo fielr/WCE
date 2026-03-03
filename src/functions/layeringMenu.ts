@@ -178,25 +178,6 @@ export default async function layeringMenu(): Promise<void> {
     return next(args);
   });
 
-  SDK.hookFunction("DialogMenuButtonClick", HOOK_PRIORITIES.AddBehaviour, (args, next) => {
-    const ret = next(args);
-    if (!ret && !["colorExpression", "colorItem", "extended", "layering", "tighten"].includes(DialogMenuMode)) {
-      const C = CharacterGetCurrent();
-      const Item = C.FocusGroup ? InventoryGet(C, C.FocusGroup.Name) : null;
-      for (let I = 0; I < DialogMenuButton.length; I++) {
-        if (MouseIn(1885 - I * 110, 15, 90, 90)) {
-          const button = DialogMenuButton[I];
-          // @ts-expect-error
-          if (Item && button === "Paint") {
-            copyColors(C, Item);
-            return false;
-          }
-        }
-      }
-    }
-    return ret;
-  });
-
   function copyColorTo(item: Item, focusItem: Item): void {
     if (item.Asset.Name === focusItem.Asset.Name) {
       if (Array.isArray(focusItem.Color)) {
@@ -243,4 +224,23 @@ export default async function layeringMenu(): Promise<void> {
       CharacterRefresh(C);
     }
   }
+
+  SDK.hookFunction("DialogMenuButtonClick", HOOK_PRIORITIES.AddBehaviour, (args, next) => {
+    const ret = next(args);
+    if (!ret && !["colorExpression", "colorItem", "extended", "layering", "tighten"].includes(DialogMenuMode)) {
+      const C = CharacterGetCurrent();
+      const Item = C.FocusGroup ? InventoryGet(C, C.FocusGroup.Name) : null;
+      for (let I = 0; I < DialogMenuButton.length; I++) {
+        if (MouseIn(1885 - I * 110, 15, 90, 90)) {
+          const button = DialogMenuButton[I];
+          // @ts-expect-error
+          if (Item && button === "Paint") {
+            copyColors(C, Item);
+            return false;
+          }
+        }
+      }
+    }
+    return ret;
+  });
 }

@@ -10,10 +10,10 @@ import { registerSocketListener } from "./appendSocketListenersToInit";
 export default async function automaticReconnect() {
   /** @type {import("idb").IDBPDatabase<{key: { key: number; value: WCEKey }; accounts: { key: number; value: WCEAcc }}>} */
   const db = await openDB("wce-saved-accounts", 21, {
-    upgrade(db, ov, nv, tx) {
-      if (!db.objectStoreNames.contains("key")) db.createObjectStore("key", { keyPath: "id" });
+    upgrade(odb, ov, nv, tx) {
+      if (!odb.objectStoreNames.contains("key")) odb.createObjectStore("key", { keyPath: "id" });
       for (const idx of tx.objectStore("key").indexNames) tx.objectStore("key").deleteIndex(idx);
-      if (!db.objectStoreNames.contains("accounts")) db.createObjectStore("accounts", { keyPath: "id" });
+      if (!odb.objectStoreNames.contains("accounts")) odb.createObjectStore("accounts", { keyPath: "id" });
       for (const idx of tx.objectStore("accounts").indexNames) tx.objectStore("accounts").deleteIndex(idx);
     },
   });

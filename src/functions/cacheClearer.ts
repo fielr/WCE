@@ -9,6 +9,21 @@ type ChatRoomMenuButtonsWCE = (ChatRoomMenuButton | "clearCache")[];
 export default function cacheClearer(): void {
   const cacheClearInterval = 1 * 60 * 60 * 1000;
 
+  function doClearCaches(): void {
+    debug("Clearing caches");
+    if (GLDrawCanvas) {
+      if (GLDrawCanvas.GL?.textureCache) {
+        GLDrawCanvas.GL.textureCache.clear();
+      }
+      GLDrawResetCanvas();
+    }
+
+    debug("Clearing old characters from cache");
+    const oldOnlineCharacters = Character.filter(c => c.IsOnline?.() && !ChatRoomCharacter.some(cc => cc.MemberNumber === c.MemberNumber));
+    oldOnlineCharacters.forEach(c => CharacterDelete(c));
+    Character.filter(c => c.IsOnline?.()).forEach(c => CharacterRefresh(c, false, false));
+  }
+
   SDK.hookFunction("ChatRoomMenuBuild", HOOK_PRIORITIES.AddBehaviour, (args, next) => {
     const ret = next(args);
     if (fbcSettings.manualCacheClear) (ChatRoomMenuButtons as ChatRoomMenuButtonsWCE).splice(ChatRoomMenuButtons.indexOf("Cut"), 0, "clearCache");
@@ -52,21 +67,6 @@ export default function cacheClearer(): void {
   }
 
   globalThis.bceClearCaches = clearCaches;
-
-  function doClearCaches(): void {
-    debug("Clearing caches");
-    if (GLDrawCanvas) {
-      if (GLDrawCanvas.GL?.textureCache) {
-        GLDrawCanvas.GL.textureCache.clear();
-      }
-      GLDrawResetCanvas();
-    }
-
-    debug("Clearing old characters from cache");
-    const oldOnlineCharacters = Character.filter(c => c.IsOnline?.() && !ChatRoomCharacter.some(cc => cc.MemberNumber === c.MemberNumber));
-    oldOnlineCharacters.forEach(c => CharacterDelete(c));
-    Character.filter(c => c.IsOnline?.()).forEach(c => CharacterRefresh(c, false, false));
-  }
 
   createTimer(() => {
     if (fbcSettings.automateCacheClear) clearCaches();

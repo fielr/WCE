@@ -398,13 +398,8 @@ export default function instantMessenger() {
           f.listElement.classList.remove(onlineClass);
           f.listElement.classList.add(offlineClass);
         }
-        if (!data.Result.some(f => f.MemberNumber === activeChat)) {
-          // Disable input, current user is offline
-          messageInput.disabled = true;
-        } else {
-          // Enable input, current user is online
-          messageInput.disabled = false;
-        }
+        // Disable input, current user is offline
+        messageInput.disabled = !data.Result.some(f => f.MemberNumber === activeChat);
       }
     }
   );

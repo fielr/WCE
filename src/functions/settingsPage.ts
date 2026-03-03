@@ -169,18 +169,9 @@ export default async function settingsPage(): Promise<void> {
                 toySyncState.deviceSettings.set(d.name, deviceSettings);
               }
               const currentIdx = vibratingSlots.indexOf(deviceSettings.SlotName);
-              let nextIdx = 0,
-                previousIdx = 0;
-              if (currentIdx <= 0) {
-                previousIdx = vibratingSlots.length - 1;
-              } else {
-                previousIdx = currentIdx - 1;
-              }
-              if (currentIdx === vibratingSlots.length - 1) {
-                nextIdx = 0;
-              } else {
-                nextIdx = currentIdx + 1;
-              }
+
+              const previousIdx = currentIdx <= 0 ? vibratingSlots.length - 1 : currentIdx - 1;
+              const nextIdx = currentIdx === vibratingSlots.length - 1 ? 0 : currentIdx + 1;
               DrawText(d.name, 300, y, "Black", "Gray");
 
               ctx.textAlign = "center";
@@ -296,24 +287,9 @@ export default async function settingsPage(): Promise<void> {
             continue;
           }
           const currentIdx = vibratingSlots.indexOf(deviceSettings.SlotName);
-          let nextIdx = 0,
-            previousIdx = 0;
-          if (currentIdx <= 0) {
-            previousIdx = vibratingSlots.length - 1;
-          } else {
-            previousIdx = currentIdx - 1;
-          }
-          if (currentIdx === vibratingSlots.length - 1) {
-            nextIdx = 0;
-          } else {
-            nextIdx = currentIdx + 1;
-          }
-
-          if (MouseX < 800 + 450 / 2) {
-            deviceSettings.SlotName = vibratingSlots[previousIdx];
-          } else {
-            deviceSettings.SlotName = vibratingSlots[nextIdx];
-          }
+          const previousIdx = currentIdx <= 0 ? vibratingSlots.length - 1 : currentIdx - 1;
+          const nextIdx = currentIdx === vibratingSlots.length - 1 ? 0 : currentIdx + 1;
+          deviceSettings.SlotName = MouseX < 800 + 450 / 2 ? vibratingSlots[previousIdx] : vibratingSlots[nextIdx];
 
           y += settingsYIncrement;
           if (y > 950) {

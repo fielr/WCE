@@ -10,23 +10,6 @@ import { waitFor, isWardrobe, parseJSON } from "../util/utils";
 let localWardrobeDB: IDBPDatabase<{ wardrobe: { key: number; value: { id: number; appearance: ServerItemBundle[] } } }>;
 let extendedWardrobeLoaded = false;
 
-export async function loadLocalWardrobe(wardrobe: ItemBundle[][]): Promise<void> {
-  localWardrobeDB = await openDB("wce-local-wardrobe", 11, {
-    upgrade(db, ov, nv, tx) {
-      if (!db.objectStoreNames.contains("wardrobe")) db.createObjectStore("wardrobe", { keyPath: "id" });
-      for (const idx of tx.objectStore("wardrobe").indexNames) tx.objectStore("wardrobe").deleteIndex(idx);
-    },
-  });
-  const localWardrobe = (await localWardrobeDB.getAll("wardrobe")) || [];
-  await waitFor(() => wardrobe.length === EXPANDED_WARDROBE_SIZE);
-  wardrobe.push(...localWardrobe.map(w => sanitizeBundles(w.appearance)));
-}
-
-async function saveLocalWardrobe(wardrobe: ServerItemBundle[][]): Promise<void> {
-  const store = localWardrobeDB.transaction("wardrobe", "readwrite").objectStore("wardrobe");
-  await Promise.all(wardrobe.map((appearance, id) => store.put({ id, appearance })));
-}
-
 /** Convert old {@link ItemProperties.Type} remnants into {@link ItemProperties.TypeRecord} in the passed item bundles.
  * @param {ItemBundle[]} bundleList
  * @returns {ItemBundle[]}
@@ -42,6 +25,23 @@ function sanitizeBundles(bundleList: ItemBundle[]): ItemBundle[] {
     }
     return bundle;
   });
+}
+
+export async function loadLocalWardrobe(wardrobe: ItemBundle[][]): Promise<void> {
+  localWardrobeDB = await openDB("wce-local-wardrobe", 11, {
+    upgrade(db, ov, nv, tx) {
+      if (!db.objectStoreNames.contains("wardrobe")) db.createObjectStore("wardrobe", { keyPath: "id" });
+      for (const idx of tx.objectStore("wardrobe").indexNames) tx.objectStore("wardrobe").deleteIndex(idx);
+    },
+  });
+  const localWardrobe = (await localWardrobeDB.getAll("wardrobe")) || [];
+  await waitFor(() => wardrobe.length === EXPANDED_WARDROBE_SIZE);
+  wardrobe.push(...localWardrobe.map(w => sanitizeBundles(w.appearance)));
+}
+
+async function saveLocalWardrobe(wardrobe: ServerItemBundle[][]): Promise<void> {
+  const store = localWardrobeDB.transaction("wardrobe", "readwrite").objectStore("wardrobe");
+  await Promise.all(wardrobe.map((appearance, id) => store.put({ id, appearance })));
 }
 
 export async function loadExtendedWardrobe(wardrobe: ItemBundle[][], init: boolean): Promise<ItemBundle[][]> {

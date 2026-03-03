@@ -38,16 +38,16 @@ export function isStringOrStringArray(c: unknown): c is string | string[] {
   return isString(c) || (Array.isArray(c) && c.every(isString));
 }
 
-export function isWardrobe(o: unknown): o is ItemBundle[][] {
-  return Array.isArray(o) && o.every(b => isItemBundleArray(b) || b === null);
-}
-
 function isItemBundle(o: unknown): o is ItemBundle {
   return isNonNullObject(o) && typeof o.Name === "string" && typeof o.Group === "string";
 }
 
 function isItemBundleArray(o: unknown): o is ItemBundle[] {
   return Array.isArray(o) && o.every(isItemBundle);
+}
+
+export function isWardrobe(o: unknown): o is ItemBundle[][] {
+  return Array.isArray(o) && o.every(b => isItemBundleArray(b) || b === null);
 }
 
 export function mustNum(id: number, def: number = -Number.MAX_SAFE_INTEGER): number {
@@ -65,6 +65,7 @@ export function objEntries<T>(obj: T): [keyof T, T[keyof T]][] {
   return Object.entries(obj) as [keyof T, T[keyof T]][];
 }
 
+// oxlint-disable-next-line typescript/no-unnecessary-type-parameters
 export function parseJSON<T>(jsonString: string | null): T {
   if (jsonString === null) {
     return null;

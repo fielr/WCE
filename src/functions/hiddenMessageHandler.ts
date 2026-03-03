@@ -87,6 +87,16 @@ export default async function hiddenMessageHandler(): Promise<void> {
     return message;
   }
 
+  function processHello(sender: Character, message: Partial<BCEMessage>): void {
+    sender.FBC = message.version ?? "0.0";
+    sender.BCEArousal = message.alternateArousal || false;
+    sender.BCEArousalProgress = message.progress || sender.ArousalSettings?.Progress || 0;
+    sender.BCEEnjoyment = message.enjoyment || 1;
+    sender.BCECapabilities = message.capabilities ?? [];
+    if (message.replyRequested) sendHello(sender.MemberNumber);
+    sender.FBCOtherAddons = message.otherAddons;
+  }
+
   function processBCEMessage(sender: Character, message: Partial<BCEMessage>, deferred = false): void {
     debug("Processing BCE message", sender, message, deferred ? "(deferred)" : "");
     /**
@@ -118,16 +128,6 @@ export default async function hiddenMessageHandler(): Promise<void> {
       default:
         logError("Invalid BCE message type detected: ", message.type);
     }
-  }
-
-  function processHello(sender: Character, message: Partial<BCEMessage>): void {
-    sender.FBC = message.version ?? "0.0";
-    sender.BCEArousal = message.alternateArousal || false;
-    sender.BCEArousalProgress = message.progress || sender.ArousalSettings?.Progress || 0;
-    sender.BCEEnjoyment = message.enjoyment || 1;
-    sender.BCECapabilities = message.capabilities ?? [];
-    if (message.replyRequested) sendHello(sender.MemberNumber);
-    sender.FBCOtherAddons = message.otherAddons;
   }
 
   registerSocketListener("ChatRoomMessage", (data: ServerChatRoomMessage) => {

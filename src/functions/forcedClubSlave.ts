@@ -11,6 +11,18 @@ declare global {
   }
 }
 
+export function bceGotoRoom(roomName: string): void {
+  ChatRoomJoinLeash = roomName;
+  DialogLeave();
+  if (CurrentScreen === "ChatRoom") ChatRoomLeave(false);
+  if (roomName) {
+    ChatSearchStart("X", ["Room", "MainHall"], { Background: "Introduction", BackgroundTagList: BackgroundsTagList });
+  } else {
+    ChatRoomSetLastChatRoom(null);
+    CommonSetScreen("Room", "MainHall");
+  }
+}
+
 export async function bceStartClubSlave(): Promise<void> {
   if (BCXgetRuleState("block_club_slave_work")?.isEnforced) {
     fbcSendAction(displayText("BCX rules forbid $PlayerName from becoming a Club Slave.", { $PlayerName: CharacterNickname(Player) }));
@@ -47,18 +59,6 @@ export async function bceStartClubSlave(): Promise<void> {
   await waitFor(() => CurrentScreen !== "Management" || !CurrentCharacter);
 
   bceGotoRoom(room);
-}
-
-export function bceGotoRoom(roomName: string): void {
-  ChatRoomJoinLeash = roomName;
-  DialogLeave();
-  if (CurrentScreen === "ChatRoom") ChatRoomLeave(false);
-  if (roomName) {
-    ChatSearchStart("X", ["Room", "MainHall"], { Background: "Introduction", BackgroundTagList: BackgroundsTagList });
-  } else {
-    ChatRoomSetLastChatRoom(null);
-    CommonSetScreen("Room", "MainHall");
-  }
 }
 
 export default async function forcedClubSlave(): Promise<void> {

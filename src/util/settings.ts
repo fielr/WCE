@@ -855,6 +855,14 @@ function bceSettingKey(): string {
   return `bce.settings.${Player?.AccountName}`;
 }
 
+async function beepChangelog(): Promise<void> {
+  await waitFor(() => !!Player?.AccountName);
+  await sleep(5000);
+  fbcBeepNotify(displayText("WCE Changelog"), displayText("WCE has received significant updates since you last used it. See /wcechangelog in a chatroom."));
+  await waitFor(() => !!document.getElementById("TextAreaChatLog"));
+  augmentedChatNotify(`Wholesome Club Extensions (WCE) changelog:\n${fbcChangelog}`);
+}
+
 export async function bceLoadSettings(): Promise<void> {
   await waitFor(() => !!Player?.AccountName);
   const key = bceSettingKey();
@@ -948,14 +956,6 @@ export function postSettings(): void {
   bceSaveSettings();
 
   postSettingsHasRun = true;
-}
-
-async function beepChangelog(): Promise<void> {
-  await waitFor(() => !!Player?.AccountName);
-  await sleep(5000);
-  fbcBeepNotify(displayText("WCE Changelog"), displayText("WCE has received significant updates since you last used it. See /wcechangelog in a chatroom."));
-  await waitFor(() => !!document.getElementById("TextAreaChatLog"));
-  augmentedChatNotify(`Wholesome Club Extensions (WCE) changelog:\n${fbcChangelog}`);
 }
 
 export function fbcSettingValue(key: string): boolean | string {

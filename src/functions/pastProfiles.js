@@ -13,10 +13,10 @@ export default async function pastProfiles() {
 
   /** @type {import("idb").IDBPDatabase<{profiles: { key: number; value: FBCSavedProfile }; notes: { key: number; value: FBCNote }}>}*/
   const db = await openDB("bce-past-profiles", 31, {
-    upgrade(db, ov, nv, tx) {
-      if (!db.objectStoreNames.contains("profiles")) db.createObjectStore("profiles", { keyPath: "memberNumber" });
+    upgrade(odb, ov, nv, tx) {
+      if (!odb.objectStoreNames.contains("profiles")) odb.createObjectStore("profiles", { keyPath: "memberNumber" });
       for (const idx of tx.objectStore("profiles").indexNames) tx.objectStore("profiles").deleteIndex(idx);
-      if (!db.objectStoreNames.contains("notes")) db.createObjectStore("notes", { keyPath: "memberNumber" });
+      if (!odb.objectStoreNames.contains("notes")) odb.createObjectStore("notes", { keyPath: "memberNumber" });
       for (const idx of tx.objectStore("notes").indexNames) tx.objectStore("notes").deleteIndex(idx);
     },
   });

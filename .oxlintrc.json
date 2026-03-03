@@ -2,7 +2,16 @@
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "plugins": ["typescript", "oxc", "unicorn", "import", "jsdoc", "promise"],
   "ignorePatterns": ["*.d.ts"],
-  "categories": { "correctness": "error", "suspicious": "warn", "pedantic": "warn", "perf": "warn", "style": "warn", "restriction": "warn", "nursery": "warn" },
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error",
+    "pedantic": "warn",
+    "perf": "warn",
+    "style": "warn",
+    "restriction": "warn",
+    "nursery": "warn"
+  },
+  "options": { "typeAware": true, "typeCheck": true },
   "env": { "browser": true },
   "rules": {
     "capitalized-comments": "off",
@@ -63,6 +72,7 @@
     "unicorn/no-unreadable-array-destructuring": "off",
     "unicorn/no-array-callback-reference": "off",
     "unicorn/no-array-sort": "off",
+    "unicorn/prefer-ternary": ["warn", "only-single-line"],
     "typescript/ban-ts-comment": "off",
     "typescript/no-confusing-void-expression": "off",
     "typescript/no-unnecessary-type-arguments": "off",
