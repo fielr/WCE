@@ -5,7 +5,7 @@
   "scripts": {
     "start": "rolldown --watch -c & npx -y http-server@latest ./dist -p 4000 -c-1 --cors & npm run serve:bc",
     "build": "rolldown -c",
-    "test": "oxlint --report-unused-disable-directives",
+    "test": "oxlint",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "escheck": "npx es-check@latest es2022 ./dist/*.js --module",
@@ -17,17 +17,17 @@
   "dependencies": {
     "buttplug": "^4.0.0",
     "idb": "^8.0.3",
-    "rolldown": "^1.0.0-rc.6"
+    "rolldown": "^1.0.0-rc.9"
   },
   "devDependencies": {
     "@total-typescript/ts-reset": "^0.6.1",
     "@types/events": "^3.0.3",
-    "@types/node": "^25.3.3",
-    "bc-stubs": "^125.0.1",
+    "@types/node": "^25.4.0",
+    "bc-stubs": "^126.0.0-Beta.1",
     "bondage-club-mod-sdk": "^1.2.0",
-    "oxfmt": "^0.36.0",
-    "oxlint": "^1.51.0",
-    "oxlint-tsgolint": "^0.15.0",
+    "oxfmt": "^0.39.0",
+    "oxlint": "^1.54.0",
+    "oxlint-tsgolint": "^0.16.0",
     "socket.io-client": "4.8.1"
   },
   "overrides": {

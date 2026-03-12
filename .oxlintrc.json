@@ -11,7 +11,7 @@
     "restriction": "warn",
     "nursery": "warn"
   },
-  "options": { "typeAware": true, "typeCheck": true },
+  "options": { "typeAware": true, "typeCheck": true, "reportUnusedDisableDirectives": "warn" },
   "env": { "browser": true },
   "rules": {
     "capitalized-comments": "off",

@@ -171,7 +171,7 @@ export default async function automaticExpressions() {
   /**
    * @param {string} t faceComponent
    * @param {ExpressionName} n newExpression
-   * @param {string | string[]} [color]
+   * @param {ItemColor} [color]
    * @returns {void}
    */
   function setExpression(t, n, color) {
