@@ -27,6 +27,7 @@ export default async function pastProfiles() {
   const noteInput = document.getElementById("bceNoteInput");
   noteInput.maxLength = 10000;
   noteInput.classList.add("bce-hidden");
+  const pastProfilePreviewCharacterId = "WCE-PastProfilePreview";
 
   const profileHistory = await initPastProfilesHistory((memberNumber, characterBundle, seen) => {
     openCharacterBundle(memberNumber, characterBundle, seen);
@@ -145,13 +146,26 @@ export default async function pastProfiles() {
   });
 
   /**
+   * Reuse a detached preview character so opening saved history never refreshes the live
+   * chat room character cache for that member number.
+   * @param {ServerAccountDataSynced} characterData
+   * @param {number} memberNumber
+   * @returns {Character}
+   */
+  function loadPastProfilePreviewCharacter(characterData, memberNumber) {
+    const C = CharacterCreate(characterData.AssetFamily, CharacterType.ONLINE, pastProfilePreviewCharacterId);
+    CharacterOnlineRefresh(C, characterData, memberNumber);
+    return C;
+  }
+
+  /**
    * @param {number} memberNumber
    * @param {string} characterBundle
    * @param {number} seen
    * @returns {void}
    */
   function openCharacterBundle(memberNumber, characterBundle, seen) {
-    const C = CharacterLoadOnline(/** @type {ServerAccountDataSynced} */ (parseJSON(characterBundle)), memberNumber);
+    const C = loadPastProfilePreviewCharacter(/** @type {ServerAccountDataSynced} */ (parseJSON(characterBundle)), memberNumber);
     C.BCESeen = seen;
     if (CurrentScreen === "ChatRoom") {
       ChatRoomHideElements();
