@@ -191,18 +191,23 @@ export default async function initPastProfilesHistory(openCharacterBundle) {
     const profileComparisonBundle = getHistoryComparisonBundle(profile.characterBundle);
     const latestComparisonBundle = latestCursor?.value ? getHistoryComparisonBundle(latestCursor.value.characterBundle) : "";
     if (latestCursor?.value && latestComparisonBundle === profileComparisonBundle) {
+      console.log(`[ProfileHistory] Updated existing entry for ${profile.name} (${profile.memberNumber}) — no profile change, updating seen timestamp`);
       latestCursor.value.name = profile.name;
       latestCursor.value.lastNick = profile.lastNick;
       latestCursor.value.seen = profile.seen;
       latestCursor.value.characterBundle = profile.characterBundle;
       await latestCursor.update(latestCursor.value);
     } else {
+      console.log(`[ProfileHistory] New history entry for ${profile.name} (${profile.memberNumber}) — profile content changed`);
       await store.add(profile);
     }
 
     const existingEntries = await memberIndex.getAll(range);
     existingEntries.sort((a, b) => b.seen - a.seen);
     const entriesToDelete = existingEntries.slice(historyLimitPerMember).map(entry => entry.id).filter(id => typeof id === "number");
+    if (entriesToDelete.length > 0) {
+      console.log(`[ProfileHistory] Trimming ${entriesToDelete.length} old entries for ${profile.memberNumber} (limit: ${historyLimitPerMember})`);
+    }
     await Promise.all(entriesToDelete.map(id => store.delete(id)));
     await tx.done;
   }
