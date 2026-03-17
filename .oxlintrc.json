@@ -125,7 +125,11 @@
         "no-undefined": "off",
         "import/no-anonymous-default-export": "off",
         "import/no-nodejs-modules": "off",
-        "node/no-process-env": "off"
+        "node/no-process-env": "off",
+        "typescript/no-unsafe-member-access": "off",
+        "typescript/no-unsafe-call": "off",
+        "typescript/no-unsafe-return": "off",
+        "typescript/no-unsafe-assignment": "off"
       }
     }
   ]
