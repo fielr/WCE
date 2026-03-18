@@ -1,4 +1,5 @@
 import type { BCX_ModAPI, BCX_Rule, BCX_RuleStateAPI } from "../../types/bcxExternalInterface";
+
 import { waitFor } from "../util/utils";
 
 let BCX: BCX_ModAPI = null;

@@ -69,10 +69,7 @@ export default async function initPastProfilesHistory(openCharacterBundle) {
       return;
     }
     const [latestEntry] = historyEntries;
-    appendHistoryOption(
-      historyDropdownDefault,
-      displayText("Latest profile ($seen)", { $seen: new Date(latestEntry.seen).toLocaleString() })
-    );
+    appendHistoryOption(historyDropdownDefault, displayText("Latest profile ($seen)", { $seen: new Date(latestEntry.seen).toLocaleString() }));
     for (const entry of historyEntries.slice(1)) {
       if (typeof entry.id !== "number") continue;
       appendHistoryOption(String(entry.id), displayText("Version from $seen", { $seen: new Date(entry.seen).toLocaleString() }));
@@ -204,7 +201,10 @@ export default async function initPastProfilesHistory(openCharacterBundle) {
 
     const existingEntries = await memberIndex.getAll(range);
     existingEntries.sort((a, b) => b.seen - a.seen);
-    const entriesToDelete = existingEntries.slice(historyLimitPerMember).map(entry => entry.id).filter(id => typeof id === "number");
+    const entriesToDelete = existingEntries
+      .slice(historyLimitPerMember)
+      .map(entry => entry.id)
+      .filter(id => typeof id === "number");
     if (entriesToDelete.length > 0) {
       console.log(`[ProfileHistory] Trimming ${entriesToDelete.length} old entries for ${profile.memberNumber} (limit: ${historyLimitPerMember})`);
     }
@@ -249,8 +249,5 @@ export default async function initPastProfilesHistory(openCharacterBundle) {
     return next(args);
   });
 
-  return {
-    saveHistory,
-    markProfileListOpen,
-  };
+  return { saveHistory, markProfileListOpen };
 }
