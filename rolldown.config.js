@@ -1,5 +1,4 @@
 import { promises as fs } from "node:fs";
-
 import { defineConfig } from "rolldown";
 
 import LoaderBuilder from "./loaderBuilder.js";

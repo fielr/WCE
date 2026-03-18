@@ -95,13 +95,7 @@ export default async function pastProfiles() {
       delete characterBundle[field];
     }
 
-    const snapshot = {
-      memberNumber: characterBundle.MemberNumber,
-      name,
-      lastNick: nick,
-      seen: Date.now(),
-      characterBundle: JSON.stringify(characterBundle),
-    };
+    const snapshot = { memberNumber: characterBundle.MemberNumber, name, lastNick: nick, seen: Date.now(), characterBundle: JSON.stringify(characterBundle) };
     debug(`saving profile of ${nick ?? name} (${name})`);
     try {
       await Promise.all([db.put("profiles", snapshot), profileHistory.saveHistory(snapshot)]);
