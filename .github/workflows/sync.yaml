@@ -14,13 +14,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout main
         uses: actions/checkout@v5
         with:
+          ref: main
           fetch-depth: 0
 
-      - name: Upstream Sync
-        uses: imba-tjd/rebase-upstream-action@0.12
-        with:
-          branch: main
-          depth: 0
+      - name: Rebase onto upstream/main
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git remote add upstream https://github.com/KittenApps/WCE.git
+          git fetch upstream main
+          git checkout -B main origin/main
+
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "GitHub Actions"
+
+          before="$(git rev-parse HEAD)"
+          git rebase upstream/main
+          after="$(git rev-parse HEAD)"
+
+          if [ "$before" = "$after" ]; then
+            echo "main is already based on upstream/main"
+            exit 0
+          fi
+
+          git push origin main --force-with-lease
