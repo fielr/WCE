@@ -1,3 +1,9 @@
 node_modules
 dist
 .DS_Store
+
+
+.claude/
+CLAUDE.md
+.codex/
+AGENTS.md
