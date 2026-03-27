@@ -142,12 +142,31 @@ export default async function pastProfiles() {
   /**
    * Reuse a detached preview character so opening saved history never refreshes the live
    * chat room character cache for that member number.
+   * Replicates essential setup from CharacterLoadOnline (decompression, field init, CSV dialog)
+   * without polluting the live character cache.
    * @param {ServerAccountDataSynced} characterData
    * @param {number} memberNumber
    * @returns {Character}
    */
   function loadPastProfilePreviewCharacter(characterData, memberNumber) {
-    const C = CharacterCreate(characterData.AssetFamily, CharacterType.ONLINE, pastProfilePreviewCharacterId);
+    // Decompress description and ownership notes (game compresses with LZString)
+    const compressionMagic = String.fromCharCode(9580);
+    if (typeof characterData.Description === "string" && characterData.Description.startsWith(compressionMagic)) {
+      characterData.Description = LZString.decompressFromUTF16(characterData.Description.substring(1));
+    }
+    if (typeof characterData.Ownership?.Notes === "string") {
+      characterData.Ownership.Notes = LZString.decompressFromUTF16(characterData.Ownership.Notes);
+    }
+
+    const C = CharacterCreate(characterData.AssetFamily ?? "Female3DCG", CharacterType.ONLINE, pastProfilePreviewCharacterId);
+    C.Name = characterData.Name;
+    C.MemberNumber = characterData.MemberNumber;
+    C.Nickname = characterData.Nickname;
+    C.Lover = characterData.Lover ?? "";
+    C.Owner = characterData.Owner ?? "";
+    C.AccountName = "Online-" + characterData.MemberNumber.toString();
+    C.Difficulty = characterData.Difficulty;
+    CharacterLoadCSVDialog(C, { module: "Online", screen: "ChatRoom", name: "Online" });
     CharacterOnlineRefresh(C, characterData, memberNumber);
     return C;
   }
