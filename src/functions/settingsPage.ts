@@ -5,7 +5,7 @@ import { fbcSettings, defaultSettings, bceSaveSettings, isDefaultSettingKey, typ
 import { waitFor, drawTooltip } from "../util/utils";
 import { toySyncState } from "./toySync";
 
-export declare enum OutputType {
+enum OutputType {
   Vibrate = "Vibrate",
 }
 
