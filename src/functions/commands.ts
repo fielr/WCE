@@ -26,12 +26,7 @@ export async function fbcDebug(copy: boolean): Promise<string> {
       .join("\n- ")}`
   );
   if (toySyncState.client?.connected) {
-    info.set(
-      "Buttplug.io Devices",
-      Array.from(toySyncState.client.devices.values())
-        .map(d => `${d.displayName} (${d.eventNames().join(",")})`)
-        .join(", ")
-    );
+    info.set("Buttplug.io Devices", toySyncState.client.devices.map(d => `${d.displayName} (${d.features.outputs.map(o => o.type).join(",")})`).join(", "));
   }
   info.set(
     "SDK Mods",

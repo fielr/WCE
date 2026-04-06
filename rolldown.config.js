@@ -29,7 +29,7 @@ const config = defineConfig({
   output: {
     dir: "dist",
     entryFileNames: "wce.js",
-    chunkFileNames: "[name].js",
+    chunkFileNames: "buttplug.js",
     sourcemap: true,
     postBanner: c => (c.isEntry ? LICENSE : undefined),
     minify: true,
@@ -37,14 +37,12 @@ const config = defineConfig({
     cleanDir: true,
   },
   transform: { target: "es2022", define: { PUBLIC_URL: `"${loaderBuilder.URL}"` } },
-  resolve: { alias: { buttplug: "buttplug/dist/web/buttplug.mjs" } },
   plugins: [
     {
       name: "loader-builder-plugin",
       async generateBundle() {
         this.emitFile({ type: "asset", fileName: "wce-fusam-loader.user.js", source: loaderBuilder.generateFusamLoader() });
         this.emitFile({ type: "asset", fileName: "wce-loader.user.js", source: loaderBuilder.generateStandaloneLoader() });
-        this.emitFile({ type: "asset", fileName: "dexie.js", source: "" });
         const publicFiles = await fs.readdir("public");
         await Promise.all(publicFiles.map(fileName => fs.readFile(`public/${fileName}`).then(source => this.emitFile({ type: "asset", fileName, source }))));
       },

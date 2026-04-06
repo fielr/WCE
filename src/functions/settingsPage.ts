@@ -5,10 +5,6 @@ import { fbcSettings, defaultSettings, bceSaveSettings, isDefaultSettingKey, typ
 import { waitFor, drawTooltip } from "../util/utils";
 import { toySyncState } from "./toySync";
 
-enum OutputType {
-  Vibrate = "Vibrate",
-}
-
 const SelectButtonOffset = 900;
 const SelectButtonWidth = 200;
 
@@ -151,18 +147,18 @@ export default async function settingsPage(): Promise<void> {
             DrawButton(
               ...scanButtonPosition,
               displayText("Scan"),
-              toySyncState.client.isScanning ? "Grey" : "White",
+              toySyncState.client.scanning ? "Grey" : "White",
               "",
               // Bc types do not accept null
               // eslint-disable-next-line no-undefined
-              toySyncState.client.isScanning ? "Already scanning" : undefined,
-              toySyncState.client.isScanning
+              toySyncState.client.scanning ? "Already scanning" : undefined,
+              toySyncState.client.scanning
             );
             ctx.textAlign = "left";
             DrawText(displayText("Device Name"), 300, 420, "Black", "Gray");
             DrawText(displayText("Synchronized Slot"), 800, 420, "Black", "Gray");
             y = 500;
-            for (const d of Array.from(toySyncState.client.devices.values()).filter(dev => dev.hasOutput(OutputType.Vibrate))) {
+            for (const d of toySyncState.client.devices.filter(dev => dev.canOutput("Vibrate"))) {
               let deviceSettings = toySyncState.deviceSettings.get(d.name);
               if (!deviceSettings) {
                 deviceSettings = { Name: d.name, SlotName: "None" };
@@ -269,13 +265,13 @@ export default async function settingsPage(): Promise<void> {
       }
       if (currentCategory === "buttplug" && toySyncState.client?.connected) {
         if (MouseIn(...scanButtonPosition)) {
-          if (!toySyncState.client.isScanning) {
+          if (!toySyncState.client.scanning) {
             toySyncState.client.startScanning();
           }
           return;
         }
         y = 500;
-        for (const d of Array.from(toySyncState.client.devices.values()).filter(dev => dev.hasOutput(OutputType.Vibrate))) {
+        for (const d of toySyncState.client.devices.filter(dev => dev.canOutput("Vibrate"))) {
           if (!MouseIn(800, y - 32, 450, 64)) {
             y += settingsYIncrement;
             continue;

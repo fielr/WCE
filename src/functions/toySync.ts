@@ -1,4 +1,4 @@
-import type { ButtplugClientDevice, ButtplugClient } from "buttplug";
+import type { ButtplugClient } from "@zendrex/buttplug.js";
 
 import { createTimer } from "../util/hooks";
 import { displayText } from "../util/localization";
@@ -24,39 +24,40 @@ export default async function toySync(): Promise<void> {
     return;
   }
 
-  const { ButtplugClient, ButtplugBrowserWebsocketClientConnector, DeviceOutput, InputType, OutputType } = await import("buttplug");
+  const { ButtplugClient, consoleLogger, ConnectionError } = await import("@zendrex/buttplug.js");
 
   logInfo("Loaded Buttplug.io");
 
-  const client = new ButtplugClient("WCE Toy Sync");
-  client.addListener("deviceadded", (device: ButtplugClientDevice) => {
+  const client = new ButtplugClient(fbcSettings.toySyncAddress || "ws://127.0.0.1:12345", { autoReconnect: true, logger: consoleLogger });
+
+  client.on("deviceAdded", ({ data: { device } }) => {
     debug("Device connected", device);
-    fbcChatNotify(displayText("Vibrator connected: $DeviceName", { $DeviceName: device.name }));
+    fbcChatNotify(displayText("Vibrator connected: $DeviceName", { $DeviceName: device.displayName }));
     const deviceSettings = toySyncState.deviceSettings.get(device.name);
     if (deviceSettings) delete deviceSettings.LastIntensity;
   });
-  client.addListener("deviceremoved", (device: ButtplugClientDevice) => {
+  client.on("deviceRemoved", ({ data: { device } }) => {
     debug("Device disconnected", device);
-    fbcChatNotify(displayText("Vibrator disconnected: $DeviceName", { $DeviceName: device.name }));
+    fbcChatNotify(displayText("Vibrator disconnected: $DeviceName", { $DeviceName: device.displayName }));
   });
-  client.addListener("scanningfinished", data => {
-    debug("Scanning finished", data);
+  client.on("scanningFinished", () => {
+    debug("Scanning finished");
   });
 
-  const connector = new ButtplugBrowserWebsocketClientConnector(fbcSettings.toySyncAddress || "ws://127.0.0.1:12345");
   try {
-    await client.connect(connector);
-    logInfo("Connected buttplug.io");
-  } catch (ex) {
-    FUSAM.modals.openAsync({
-      prompt: displayText(
-        "buttplug.io is enabled, but server could not be contacted at $toySyncAddress. Is Intiface Desktop running? Is another client connected to it?",
-        { $toySyncAddress: fbcSettings.toySyncAddress }
-      ),
-      buttons: { submit: "OK" },
-    });
-    logError("buttplug.io could not connect to server", ex);
-    return;
+    await client.connect();
+    await client.startScanning();
+  } catch (err) {
+    if (err instanceof ConnectionError) {
+      FUSAM.modals.openAsync({
+        prompt: displayText(
+          "buttplug.io is enabled, but server could not be contacted at $toySyncAddress. Is Intiface Desktop running? Is another client connected to it?",
+          { $toySyncAddress: fbcSettings.toySyncAddress }
+        ),
+        buttons: { submit: "OK" },
+      });
+      logError("buttplug.io could not connect to server", err);
+    }
   }
 
   toySyncState.client = client;
@@ -67,7 +68,7 @@ export default async function toySync(): Promise<void> {
       removeTimer();
       return;
     }
-    for (const d of Array.from(client.devices.values()).filter(dev => dev.hasOutput(OutputType.Vibrate))) {
+    for (const d of client.devices.filter(dev => dev.canOutput("Vibrate"))) {
       const deviceSettings = toySyncState.deviceSettings?.get(d.name);
       if (!deviceSettings) continue;
 
@@ -78,24 +79,24 @@ export default async function toySync(): Promise<void> {
       deviceSettings.LastIntensity = intensity;
 
       if (typeof intensity !== "number" || intensity < 0) {
-        d.runOutput(DeviceOutput.Vibrate.percent(0));
+        d.vibrate(0);
       } else {
         switch (intensity) {
           case 0:
-            d.runOutput(DeviceOutput.Vibrate.percent(0.1));
-            debug(d.name, slot, "intensity 0.1");
+            d.vibrate(10);
+            debug(d.name, slot, "intensity 10");
             break;
           case 1:
-            d.runOutput(DeviceOutput.Vibrate.percent(0.4));
-            debug(d.name, slot, "intensity 0.4");
+            d.vibrate(40);
+            debug(d.name, slot, "intensity 40");
             break;
           case 2:
-            d.runOutput(DeviceOutput.Vibrate.percent(0.75));
-            debug(d.name, slot, "intensity 0.75");
+            d.vibrate(75);
+            debug(d.name, slot, "intensity 75");
             break;
           case 3:
-            d.runOutput(DeviceOutput.Vibrate.percent(1));
-            debug(d.name, slot, "intensity 1");
+            d.vibrate(100);
+            debug(d.name, slot, "intensity 100");
             break;
           default:
             logWarn("Invalid intensity in ", slot, ":", intensity);
@@ -114,15 +115,15 @@ export default async function toySync(): Promise<void> {
           fbcChatNotify("buttplug.io is not connected");
           return;
         }
-        const batteryDevices: ButtplugClientDevice[] = Array.from(client.devices.values()).filter(dev => dev.hasInput(InputType.Battery));
+        const batteryDevices = client.devices.filter(dev => dev.canRead("Battery"));
         if (batteryDevices.length === 0) {
           fbcChatNotify("No battery devices connected");
           return;
         }
-        Promise.all(batteryDevices.map(dev => dev.battery())).then((batteryStatus: number[]) => {
+        Promise.all(batteryDevices.map(dev => dev.readSensor("Battery"))).then((batteryStatus: number[]) => {
           for (let i = 0; i < batteryDevices.length; i++) {
             const battery = batteryStatus[i] * 100;
-            fbcChatNotify(`${batteryDevices[i].name}: ${battery}%`);
+            fbcChatNotify(`${batteryDevices[i].displayName}: ${battery}%`);
           }
         });
       },
@@ -135,7 +136,7 @@ export default async function toySync(): Promise<void> {
           fbcChatNotify(displayText("buttplug.io is not connected"));
           return;
         }
-        if (client.isScanning) {
+        if (client.scanning) {
           client.stopScanning();
           fbcChatNotify(displayText("Scanning stopped"));
           return;
