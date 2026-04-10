@@ -145,22 +145,21 @@ export function processChatAugmentsForLine(chatMessageElement, scrollToEnd, isCh
       if (url) {
         // Embed or link
         /** @type {HTMLElement | Text | null} */
-        let domNode = null;
+        let domNode;
         const linkNode = document.createElement("a");
         newChildren.push(linkNode);
         const embedType = bceAllowedToEmbed(url);
         switch (embedType) {
-          case EMBED_TYPE.Image:
-            {
-              const imgNode = document.createElement("img");
-              imgNode.src = url.href;
-              imgNode.alt = url.href;
-              imgNode.onload = scrollToEnd;
-              imgNode.classList.add("bce-img");
-              linkNode.classList.add("bce-img-link");
-              domNode = imgNode;
-            }
+          case EMBED_TYPE.Image: {
+            const imgNode = document.createElement("img");
+            imgNode.src = url.href;
+            imgNode.alt = url.href;
+            imgNode.onload = scrollToEnd;
+            imgNode.classList.add("bce-img");
+            linkNode.classList.add("bce-img-link");
+            domNode = imgNode;
             break;
+          }
           default:
             domNode = document.createTextNode(url.href);
             if (embedType !== EMBED_TYPE.None) {

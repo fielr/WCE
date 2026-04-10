@@ -53,23 +53,23 @@ export default function pendingMessages() {
       div.setAttribute("data-sender", Player.MemberNumber?.toString());
       div.setAttribute("data-nonce", nonce.toString());
       switch (args[1].Type) {
-        case "Chat":
-          {
-            div.classList.add("ChatMessageChat");
-            const name = document.createElement("span");
-            name.classList.add("ChatMessageName");
-            name.style.color = Player.LabelColor || "";
-            name.textContent = CharacterNickname(Player);
-            // ToDo: add ungarbled message here
-            div.appendChild(name);
-            div.appendChild(document.createTextNode(`: ${args[1].Content}`));
-          }
+        case "Chat": {
+          div.classList.add("ChatMessageChat");
+          const name = document.createElement("span");
+          name.classList.add("ChatMessageName");
+          name.style.color = Player.LabelColor || "";
+          name.textContent = CharacterNickname(Player);
+          // ToDo: add ungarbled message here
+          div.appendChild(name);
+          div.appendChild(document.createTextNode(`: ${args[1].Content}`));
           break;
+        }
         case "Emote":
-        case "Action":
+        case "Action": {
           div.classList.add("ChatMessageEmote");
           div.appendChild(document.createTextNode(`*${args[1].Type === "Emote" ? `${CharacterNickname(Player)}: ` : ""}${args[1].Content}*`));
           break;
+        }
         default:
           return next(args);
       }

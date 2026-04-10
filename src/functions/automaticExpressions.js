@@ -409,8 +409,7 @@ export default async function automaticExpressions() {
     /** @type {Record<string, ExpressionStage[]>} */
     const e = {};
     /** @type {(keyof typeof manualComponents)[]} */
-    let types = [];
-
+    let types;
     if (AssetGroup === "Eyes") {
       types = ["Eyes", "Eyes2"];
     } else if (AssetGroup === "Eyes1") {
@@ -807,7 +806,7 @@ export default async function automaticExpressions() {
 
       const maxPriorityPoses = objEntries(desiredPose).filter(p => p[1].Priority === maxPriority);
 
-      let maxPriorityPose = "";
+      let maxPriorityPose;
 
       if (maxPriorityPoses.length > 1) {
         const maxId = Math.max(...maxPriorityPoses.map(p => p[1].Id)),

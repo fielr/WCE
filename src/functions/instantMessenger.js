@@ -180,18 +180,17 @@ export default function instantMessenger() {
       case "Action":
         message.textContent = `*${messageText}*`;
         break;
-      case "Message":
-        {
-          const sender = document.createElement("span");
-          sender.classList.add("bce-message-sender");
-          if (messageColor) {
-            sender.style.color = messageColor;
-          }
-          sender.textContent = `${author}: `;
-          message.appendChild(sender);
-          message.appendChild(document.createTextNode(messageText));
+      case "Message": {
+        const sender = document.createElement("span");
+        sender.classList.add("bce-message-sender");
+        if (messageColor) {
+          sender.style.color = messageColor;
         }
+        sender.textContent = `${author}: `;
+        message.appendChild(sender);
+        message.appendChild(document.createTextNode(messageText));
         break;
+      }
       default:
         message.textContent = messageText;
         break;

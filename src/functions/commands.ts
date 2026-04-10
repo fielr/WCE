@@ -73,7 +73,7 @@ function findDrawnCharacters(target?: string, limitVisible = false): Character[]
     return baseList;
   }
 
-  let targetMembers: Character[] = [];
+  let targetMembers: Character[];
   if (/^\d+$/u.test(target)) {
     targetMembers = [baseList.find(c => c.MemberNumber === parseInt(target))];
   } else {
@@ -130,14 +130,13 @@ export default async function commands(): Promise<void> {
       Tag: "exportlooks",
       Description: displayText("[target member number]: Copy your or another player's appearance in a format that can be imported with WCE or BCX"),
       Action: (_, _command, [target]): void => {
-        let targetCharacter: Character | null = null;
-        targetCharacter = (target ? Character.find(c => c.MemberNumber === parseInt(target)) : Player) ?? null;
+        const targetCharacter: Character | null = (target ? Character.find(c => c.MemberNumber === parseInt(target)) : Player) ?? null;
         if (!targetCharacter) {
           logInfo("Could not find member", target);
           return;
         }
-        let includeBase = false,
-          includeBinds = false,
+        let includeBase,
+          includeBinds,
           includeLocks = false;
         FUSAM.modals
           .openAsync({ prompt: displayText("Include binds?"), buttons: { cancel: "No", submit: "Yes" } })

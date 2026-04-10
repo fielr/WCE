@@ -76,6 +76,7 @@ export default async function hiddenMessageHandler(): Promise<void> {
   await waitFor(() => ServerSocket && ServerIsConnected);
 
   function parseBCEMessage(data: ServerChatRoomMessage): Partial<BCEMessage> {
+    // oxlint-disable-next-line no-useless-assignment
     let message: Partial<BCEMessage> = {};
     if (Array.isArray(data.Dictionary)) {
       const dicts: FBCDictionaryEntry[] = data.Dictionary as FBCDictionaryEntry[];
