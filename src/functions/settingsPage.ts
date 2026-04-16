@@ -273,14 +273,12 @@ export default async function settingsPage(): Promise<void> {
         y = 500;
         for (const d of toySyncState.client.devices.filter(dev => dev.canOutput("Vibrate"))) {
           if (!MouseIn(800, y - 32, 450, 64)) {
-            // oxlint-disable-next-line no-useless-assignment
             y += settingsYIncrement;
             continue;
           }
           const deviceSettings = toySyncState.deviceSettings.get(d.name);
           if (!deviceSettings) {
             logWarn("Could not find device settings for", d.name, toySyncState.deviceSettings);
-            // oxlint-disable-next-line no-useless-assignment
             y += settingsYIncrement;
             continue;
           }
