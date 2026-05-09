@@ -312,9 +312,7 @@ export default async function commands(): Promise<void> {
           );
         } else if (targetMembers[0].IsPlayer()) {
           fbcChatNotify("You can't whisper yourself!");
-        } else if (!msg) {
-          fbcChatNotify(displayText("No message provided"));
-        } else {
+        } else if (msg) {
           const targetMemberNumber = targetMembers[0].MemberNumber;
           const originalTarget = ChatRoomTargetMemberNumber;
           ChatRoomTargetMemberNumber = targetMemberNumber ?? -1;
@@ -323,6 +321,8 @@ export default async function commands(): Promise<void> {
           // Erase duplicate from history to prevent things like automatic shock collars listening to the history from triggering
           ChatRoomLastMessage.pop();
           ChatRoomTargetMemberNumber = originalTarget;
+        } else {
+          fbcChatNotify(displayText("No message provided"));
         }
       },
     },

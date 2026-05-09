@@ -1,3 +1,4 @@
+// oxlint-disable require-unicode-regexp
 import { createTimer } from "../util/hooks";
 import { displayText } from "../util/localization";
 import { debug } from "../util/logger";

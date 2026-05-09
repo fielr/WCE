@@ -27,11 +27,11 @@ export default async function automaticReconnect() {
     await deleteDB("wce-saved-accounts");
     window.location.reload();
   }
-  if (!key) {
+  if (key) {
+    encKey = key.key;
+  } else {
     encKey = await window.crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]);
     await db.put("key", { id: 1, key: encKey });
-  } else {
-    encKey = key.key;
   }
 
   /**

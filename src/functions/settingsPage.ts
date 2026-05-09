@@ -140,9 +140,7 @@ export default async function settingsPage(): Promise<void> {
         DrawText(displayText("This page allows configuration of the synchronization of bluetooth connected toys."), 300, 350, "Black", "Gray");
         ElementPosition("WceIntifaceAddress", 1300, settingsYStart + 32, 550);
         if (fbcSettings.toySync) {
-          if (!toySyncState.client?.connected) {
-            DrawText(displayText("Still connecting or connection failed..."), 300, 450, "Black", "Gray");
-          } else {
+          if (toySyncState.client?.connected) {
             ctx.textAlign = "center";
             DrawButton(
               ...scanButtonPosition,
@@ -188,6 +186,8 @@ export default async function settingsPage(): Promise<void> {
                 break;
               }
             }
+          } else {
+            DrawText(displayText("Still connecting or connection failed..."), 300, 450, "Black", "Gray");
           }
         }
       } else {
@@ -233,6 +233,7 @@ export default async function settingsPage(): Promise<void> {
       open(DISCORD_INVITE_URL, "_blank"); */
     } else if (MouseIn(...websitePosition)) {
       open(WEBSITE_URL, "_blank");
+      // oxlint-disable-next-line unicorn/no-negated-condition
     } else if (currentCategory !== null) {
       if (MouseIn(1815, 180, 90, 90) && currentCategory !== "buttplug") {
         currentPageNumber += 1;

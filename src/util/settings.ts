@@ -1,8 +1,8 @@
+// oxlint-disable typescript/explicit-module-boundary-types, typescript/explicit-function-return-type
 import { createChatOptions } from "../functions/antiGarbling";
 import { checkBlindness } from "../functions/blindWithoutGlasses";
 import { augmentedChatNotify } from "../functions/chatAugments";
 import { loadExtendedWardrobe, loadLocalWardrobe } from "../functions/extendedWardrobe";
-// oxlint-disable explicit-module-boundary-types explicit-function-return-type
 import { sendHello } from "../functions/hiddenMessageHandler";
 import { toySyncState, type FBCToySetting } from "../functions/toySync";
 import {
@@ -639,10 +639,10 @@ export const defaultSettings = {
     value: false,
     disabled: () => false,
     sideEffects: newValue => {
-      if (!newValue) {
-        removeCustomEffect("BlurLight");
-      } else {
+      if (newValue) {
         checkBlindness();
+      } else {
+        removeCustomEffect("BlurLight");
       }
       debug("blindWithoutGlasses", newValue);
     },

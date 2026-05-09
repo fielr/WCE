@@ -270,7 +270,7 @@ export default function itemAntiCheat() {
         }
         const oldItem = oldItems.get(cur) ?? null;
         const result = validateSingleItemChange(sourceCharacter, oldItem, newItem, ignoreLocks, ignoreColors);
-        changes.prohibited = changes.prohibited || result.prohibited;
+        changes.prohibited ||= result.prohibited;
         changes.changed += result.changed;
         return changes;
       },

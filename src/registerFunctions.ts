@@ -62,7 +62,6 @@ async function registerFunction(func: () => Promise<void> | void, label: string)
 
 export async function registerAllFunctions(): Promise<void> {
   // Delay game processes until registration is complete
-  // oxlint-disable-next-line no-useless-assignment
   let funcsRegistered: "init" | "enable" | "disable" = "init";
 
   SDK.hookFunction("LoginResponse", HOOK_PRIORITIES.Top, (args, next) => {

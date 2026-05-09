@@ -53,8 +53,8 @@ const config = defineConfig({
 if (process.argv.includes("--watch")) {
   fs.writeFile("dist/wce-fusam-loader.user.js", loaderBuilder.generateFusamLoader());
   fs.writeFile("dist/wce-loader.user.js", loaderBuilder.generateStandaloneLoader());
-  const publicFiles = await fs.readdir("public");
-  publicFiles.map(fileName => fs.copyFile(`public/${fileName}`, `dist/${fileName}`));
+  // oxlint-disable-next-line unicorn/prefer-top-level-await
+  fs.readdir("public").then(files => files.map(fileName => fs.copyFile(`public/${fileName}`, `dist/${fileName}`)));
   config.plugins = [];
   config.output.minify = false;
   config.output.cleanDir = false;

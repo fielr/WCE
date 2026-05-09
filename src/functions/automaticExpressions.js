@@ -1,3 +1,4 @@
+// oxlint-disable unicorn/no-negated-condition
 import { ActivityTriggers, ArousalExpressionStages, EventExpressions } from "../util/expressions";
 import { createTimer } from "../util/hooks";
 import { displayText } from "../util/localization";
@@ -249,7 +250,11 @@ export default async function automaticExpressions() {
       })
     );
     // Restore manual overrides, if manual not in types
-    if (!types.includes(MANUAL_OVERRIDE_EVENT_TYPE)) {
+    if (types.includes(MANUAL_OVERRIDE_EVENT_TYPE)) {
+      for (const [k] of objEntries(manualComponents)) {
+        delete manualComponents[k];
+      }
+    } else {
       pushEvent({
         Type: MANUAL_OVERRIDE_EVENT_TYPE,
         Duration: -1,
@@ -258,10 +263,6 @@ export default async function automaticExpressions() {
           return a;
         }, {}),
       });
-    } else {
-      for (const [k] of objEntries(manualComponents)) {
-        delete manualComponents[k];
-      }
     }
   }
 
