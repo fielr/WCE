@@ -22,11 +22,11 @@
   "devDependencies": {
     "@total-typescript/ts-reset": "^0.6.1",
     "@types/events": "^3.0.3",
-    "@types/node": "^25.6.2",
-    "bc-stubs": "^128.0.0-Alpha.1",
+    "@types/node": "^25.7.0",
+    "bc-stubs": "^128.0.0-Beta.1",
     "bondage-club-mod-sdk": "^1.2.0",
-    "oxfmt": "^0.48.0",
-    "oxlint": "^1.63.0",
+    "oxfmt": "^0.49.0",
+    "oxlint": "^1.64.0",
     "oxlint-tsgolint": "^0.22.1",
     "socket.io-client": "4.8.1"
   },

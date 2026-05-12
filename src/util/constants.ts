@@ -1,10 +1,10 @@
 export const FBC_VERSION = "6.3.17";
 export const settingsVersion = 63.9;
-export const SUPPORTED_GAME_VERSIONS = ["R126"];
+export const SUPPORTED_GAME_VERSIONS = ["R127", "R128"];
 
-export const fbcChangelog = `WCE v6.3.17
+export const fbcChangelog = `WCE v6.3.18
 * BC R126 compatibility and other fixes
-* update to buttplug-js v4
+* update buttplug-js for toySync
 
 WCE v6.3
 * configure layer hiding in layering menus

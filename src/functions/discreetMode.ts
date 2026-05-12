@@ -40,7 +40,7 @@ export default function discreetMode(): void {
       const itemBackground = DrawGetCustomBackground(Player);
       if (itemBackground) {
         backgroundURL = `Backgrounds/${itemBackground}.jpg`;
-      } else if (ChatRoomCustomized && ChatRoomCustomBackground) {
+      } else if (ChatRoomIsCustomized() && ChatRoomData?.Custom?.ImageURL) {
         return false;
       } else {
         backgroundURL = `Backgrounds/${ChatRoomData.Background}.jpg`;
