@@ -5,6 +5,17 @@ import { stutterWord } from "./chatAugments";
 export let createChatOptions: (div: HTMLDivElement) => void;
 
 export default function antiGarbling(): void {
+  if (fbcSettings.antiGarbleChatOptions) {
+    ["baby", "stutter"].forEach(img => {
+      const preloadLink = document.createElement("link");
+      preloadLink.href = `${PUBLIC_URL}/${img}.png`;
+      preloadLink.rel = "preload";
+      preloadLink.as = "image";
+      preloadLink.type = "image/png";
+      document.head.appendChild(preloadLink);
+    });
+  }
+
   SDK.hookFunction("ChatRoomGenerateChatRoomChatMessage", HOOK_PRIORITIES.Top, ([type, msg, replyId, ...args], next) => {
     if (!fbcSettings.antiGarble || type === "Emote") return next([type, msg, replyId, ...args]);
 
